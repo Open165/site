@@ -34,6 +34,10 @@ function sortByEndDate(siteMap: {[key: string]: Pick<NPA165SiteData, 'endDate'>[
   }
 }
 
+function printDone(filePath: string) {
+  console.info(`[scripts/pull-data] ${NPA_165_SITE_URL} -> ${filePath}`);
+}
+
 const downloadFile = async () => {
   const scamSiteCsv = await (await fetch(NPA_165_SITE_URL)).text();
   const rawData: NPA165SiteData[] = scamSiteCsv.split('\n').filter(
@@ -77,13 +81,15 @@ const downloadFile = async () => {
     siteByHost[b][0].endDate.localeCompare(siteByHost[a][0].endDate)
   );
 
+
+
   await Promise.all([
-    fs.writeFile(SITE_BY_NAME_OUTPUT, JSON.stringify(siteByName, null, 2)),
-    fs.writeFile(SITE_BY_HOST_OUTPUT, JSON.stringify(siteByHost, null, 2)),
-    fs.writeFile(HOSTS_OUTPUT, siteHosts.join('\n')),
-    fs.writeFile(SITES_OUTPUT, siteNames.join('\n'))
+    fs.writeFile(SITE_BY_NAME_OUTPUT, JSON.stringify(siteByName, null, 2)).then(() => printDone(SITE_BY_NAME_OUTPUT)),
+    fs.writeFile(SITE_BY_HOST_OUTPUT, JSON.stringify(siteByHost, null, 2)).then(() => printDone(SITE_BY_HOST_OUTPUT)),
+    fs.writeFile(HOSTS_OUTPUT, siteHosts.join('\n')).then(() => printDone(HOSTS_OUTPUT)),
+    fs.writeFile(SITES_OUTPUT, siteNames.join('\n')).then(() => printDone(SITES_OUTPUT))
   ]);
 };
 
 
-downloadFile().then(() => console.log('Done'), console.error);
+downloadFile().then(() => console.info('[scripts/pull-data] Done'), console.error);

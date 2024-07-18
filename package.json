@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "pages:build": "npx @cloudflare/next-on-pages",
+    "postinstall": "npm run pull-data",
     "preview": "npm run pages:build && wrangler pages dev",
     "deploy": "npm run pages:build && wrangler pages deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts",
