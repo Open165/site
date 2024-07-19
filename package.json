@@ -10,7 +10,9 @@
     "pages:build": "npx @cloudflare/next-on-pages",
     "preview": "npm run pages:build && wrangler pages dev",
     "deploy": "npm run pages:build && wrangler pages deploy",
-    "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts",
+    "gen:migration": "prisma migrate diff --from-local-d1 --to-schema-datamodel ./db/schema.prisma --script",
+    "db:migrate": "wrangler d1 migrations apply open165"
   },
   "prisma": {
     "schema": "db/schema.prisma"

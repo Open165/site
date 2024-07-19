@@ -66,3 +66,19 @@ In order to enable the example:
 After doing this you can run the `dev` or `preview` script and visit the `/api/hello` route to see the example in action.
 
 Finally, if you also want to see the example work in the deployed application make sure to add a `MY_KV_NAMESPACE` binding to your Pages application in its [dashboard kv bindings settings section](https://dash.cloudflare.com/?to=/:account/pages/view/:pages-project/settings/functions#kv_namespace_bindings_section). After having configured it make sure to re-deploy your application.
+
+------
+
+## DB workflow
+
+1. Make changes to `db/schema.prisma`
+2. Generate new migration SQL file via `npm run gen:migration -- --output db/migrations/<numbers>_<description>.sql`
+3. Run `npm run db:migrate -- --local` to apply to local DB, or `npm run db:migrate -- --remote` to apply to remote DB (need to [login wrangler](https://developers.cloudflare.com/workers/wrangler/commands/#login) first)
+
+<details>
+<summary>Details under the script</summary>
+Details: https://www.prisma.io/docs/orm/overview/databases/cloudflare-d1#differences-to-consider
+
+- Migration scripts (`db/migrations/*.sql`) are created by prisma, as it compares local sqlite DB and schema.prisma and outputs SQL file.
+- Migration operation itself is managed by wrangler commands, as it keeps tracks of what migration files have been ran.
+</details>
