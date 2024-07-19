@@ -1,0 +1,24 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  // Only used by prisma studio; in runtime it's handled by the d1 adapter
+  url      = env("DATABASE_URL")
+}
+
+// Based on 165反詐騙諮詢專線_假投資(博弈)網站
+// URL: https://data.gov.tw/dataset/160055
+model ScamSiteRecord {
+  id    Int     @id @default(autoincrement())
+  name  String
+  url   String
+  count Int
+  startDate String
+  endDate String
+}
