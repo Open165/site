@@ -56,6 +56,9 @@ The project uses Cloudflare D1 database and Prisma ORM. To make changes to the d
     npx prisma generate
     ```
 
+Please refrain from `prisma` migration and seed commands directly,
+as it will not connect to the correct Cloudflare D1 database (local or remote).
+
 <details>
 <summary>Details under the script</summary>
 
@@ -69,6 +72,18 @@ Details
 - Migration scripts (`db/migrations/*.sql`) are created by prisma, as it compares your local sqlite DB and `schema.prisma` and outputs SQL file.
 - Migration operation itself is managed by wrangler commands, as it keeps tracks of what migration files have been run.
 </details>
+
+## Incorporating other's changes to the database schema
+
+If you are pulling changes from the repository and the database schema has changed, you need to run the following commands
+
+```bash
+# Update local DB by applying new migrations
+npm run db:migrate -- --local
+
+# Update Prisma client
+npx prisma generate
+```
 
 ## Cloudflare Bindings
 

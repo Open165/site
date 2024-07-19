@@ -12,6 +12,8 @@
     "deploy": "npm run pages:build && wrangler pages deploy",
     "gen:env": "wrangler types --env-interface CloudflareEnv env.d.ts",
     "gen:migration": "prisma migrate diff --from-local-d1 --to-schema-datamodel ./db/schema.prisma --script",
+    "pregen:seed": "tsx ./scripts/syncSiteRecord.ts",
+    "gen:seed": "echo 'hi'",
     "db:migrate": "wrangler d1 migrations apply open165"
   },
   "prisma": {
@@ -38,6 +40,7 @@
     "postcss": "^8",
     "prisma": "^5.17.0",
     "tailwindcss": "^3.3.0",
+    "tsx": "^4.16.2",
     "typescript": "^5",
     "vercel": "^35.0.3",
     "wrangler": "^3.65.0"
