@@ -12,6 +12,9 @@
     "deploy": "npm run pages:build && wrangler pages deploy",
     "cf-typegen": "wrangler types --env-interface CloudflareEnv env.d.ts"
   },
+  "prisma": {
+    "schema": "db/schema.prisma"
+  },
   "dependencies": {
     "@prisma/adapter-d1": "^5.17.0",
     "@prisma/client": "^5.17.0",
