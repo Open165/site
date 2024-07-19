@@ -12,8 +12,8 @@
     "deploy": "npm run pages:build && wrangler pages deploy",
     "gen:env": "wrangler types --env-interface CloudflareEnv env.d.ts",
     "gen:migration": "prisma migrate diff --from-local-d1 --to-schema-datamodel ./db/schema.prisma --script",
-    "pregen:seed": "tsx ./scripts/syncSiteRecord.ts",
-    "gen:seed": "echo 'hi'",
+    "predb:seed": "tsx ./scripts/syncSiteRecord.ts",
+    "db:seed": "npx wrangler d1 execute open165 --file tmp/scamSiteRecord.sql",
     "db:migrate": "wrangler d1 migrations apply open165"
   },
   "prisma": {

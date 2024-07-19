@@ -8,17 +8,27 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  // Only used by prisma studio; in runtime it's handled by the d1 adapter
+  // Only used by prisma CLI; in runtime it's handled by the d1 adapter
   url      = env("DATABASE_URL")
 }
 
 // Based on 165反詐騙諮詢專線_假投資(博弈)網站
 // URL: https://data.gov.tw/dataset/160055
 model ScamSiteRecord {
-  id    Int     @id @default(autoincrement())
   name  String
   url   String
   count Int
+
+  // In YYYY/MM/DD format
   startDate String
+  // In YYYY/MM/DD format
   endDate String
+
+  // Extra fields
+  id    Int     @id @default(autoincrement())
+  // Extracted from url
+  host  String
+
+  @@index([host])
+  @@index([name])
 }

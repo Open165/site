@@ -7,7 +7,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`c3`](https:
 Setup database using:
 ```bash
 npm run db:migrate -- --local
-npm run db:seed -- --local
+npm run db:seed
 ```
 
 ## Start server
@@ -33,6 +33,16 @@ npm run preview
 This locally builds and previews application using the [Wrangler](https://developers.cloudflare.com/workers/wrangler/) CLI.
 
 For more details see the [`@cloudflare/next-on-pages` recommended workflow](https://github.com/cloudflare/next-on-pages/blob/main/internal-packages/next-dev/README.md#recommended-development-workflow)
+
+## Updating scam site DB from 165 open data
+
+```bash
+# Fetch opendata and update local DB
+npm run db:seed
+
+# Fetch opendata and update to remote DB. Add --yes to skip confirmation
+npm run db:seed -- --remote
+```
 
 ## Making changes to the database schema
 

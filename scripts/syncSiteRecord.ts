@@ -48,12 +48,11 @@ async function main() {
   // Sort by endDate ascending
   rawData.sort((a, b) => a.endDate.localeCompare(b.endDate));
 
-  const valueList = rawData.map((data) => `('${data.name.replaceAll("'", "''")}', '${data.url}', ${data.count}, '${data.startDate}', '${data.endDate}', '${data.host}')`).join(',\n');
+  const values = rawData.map((data) => `('${data.name.replaceAll("'", "''")}', '${data.url}', ${data.count}, '${data.startDate}', '${data.endDate}', '${data.host}')`);
 
   await writeFile(SQL_FILE, `
     DELETE FROM ${TABLE};
-    INSERT INTO ${TABLE} (name, url, count, startDate, endDate, host) VALUES
-      ${valueList};
+    ${values.map((value) => `INSERT INTO ${TABLE} (name, url, count, startDate, endDate, host) VALUES ${value};`).join('\n')}
   `.trim());
 }
 
