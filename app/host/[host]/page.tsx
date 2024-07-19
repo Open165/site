@@ -2,9 +2,14 @@ import { getPrisma } from '@/lib/db'
 
 export const runtime = 'edge';
 
-export default async function Host({params: {host}}: {params: {host: string}}) {
+async function getRecords(host: string) {
+  'use server';
   const prisma = getPrisma();
-  const records = await prisma.scamSiteRecord.findMany({where: {host}});
+  return prisma.scamSiteRecord.findMany({where: {host}});
+}
+
+export default async function Host({params: {host}}: {params: {host: string}}) {
+  const records = await getRecords(host);
 
   return (
     <main>
