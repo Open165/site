@@ -22,7 +22,9 @@
   "dependencies": {
     "@prisma/adapter-d1": "^5.17.0",
     "@prisma/client": "^5.17.0",
+    "cookie": "^0.6.0",
     "next": "14.1.0",
+    "pcre-to-regexp": "^1.1.0",
     "react": "^18",
     "react-dom": "^18",
     "server-only": "^0.0.1"

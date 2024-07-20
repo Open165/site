@@ -1,13 +1,17 @@
+/* Tailwind Directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Root Variables */
 :root {
+  /* Light Theme */
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 }
 
+/* Dark Theme */
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
@@ -16,6 +20,7 @@
   }
 }
 
+/* Body Styles */
 body {
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
@@ -26,6 +31,7 @@ body {
     rgb(var(--background-start-rgb));
 }
 
+/* Custom Utilities */
 @layer utilities {
   .text-balance {
     text-wrap: balance;
