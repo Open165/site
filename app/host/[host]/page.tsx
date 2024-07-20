@@ -5,7 +5,7 @@ export const runtime = 'edge';
 async function getRecords(host: string) {
   'use server';
   const prisma = getPrisma();
-  return prisma.scamSiteRecord.findMany({where: {host}});
+  return prisma.scamSiteRecord.findMany({where: {host}, orderBy: {endDate: 'desc'}});
 }
 
 export default async function Host({params: {host}}: {params: {host: string}}) {
