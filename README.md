@@ -6,6 +6,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`c3`](https:
 
 Setup database using:
 ```bash
+npm i
 npm run db:migrate -- --local
 npm run db:seed
 ```
