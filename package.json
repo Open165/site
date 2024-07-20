@@ -20,6 +20,7 @@
     "schema": "db/schema.prisma"
   },
   "dependencies": {
+    "@next/third-parties": "^14.2.5",
     "@prisma/adapter-d1": "^5.17.0",
     "@prisma/client": "^5.17.0",
     "cookie": "^0.6.0",
