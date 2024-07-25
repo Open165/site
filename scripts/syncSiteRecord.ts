@@ -9,6 +9,7 @@ import path from "path";
  */
 const NPA_165_SITE_URL = 'https://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=3BB8E3CE-8223-43AF-B1AB-5824FA889883';
 const TABLE = 'ScamSiteRecord';
+const FTS_TABLE = 'ScamSiteRecordFTS';
 const SQL_FILE = './tmp/scamSiteRecord.sql';
 
 type NPA165SiteData = /** Fields from data */
@@ -53,6 +54,9 @@ async function main() {
   await writeFile(SQL_FILE, `
     DELETE FROM ${TABLE};
     ${values.map((value) => `INSERT INTO ${TABLE} (name, url, count, startDate, endDate, host) VALUES ${value};`).join('\n')}
+
+    -- Rebuild FTS
+    INSERT INTO ${FTS_TABLE}(${FTS_TABLE}) VALUES('rebuild');
   `.trim());
 }
 
