@@ -43,7 +43,7 @@ function ScamRecord({ host, names, maxEndDate }: AggregatedRecord) {
       <div className="p-6 border-l-4 border-red-500">
         <h2 className="text-xl font-bold mb-2 text-gray-800">
           <Link
-            href={`/host/${host}`}
+            href={`/host/${host.toLowerCase()}`}
             className="hover:text-red-600 transition-colors duration-300"
           >
             {host}
@@ -57,7 +57,7 @@ function ScamRecord({ host, names, maxEndDate }: AggregatedRecord) {
             <span key={name} className="ml-1">
               {index > 0 && ', '}
               <Link
-                href={`/name/${name}`}
+                href={`/name/${name.toLowerCase()}`}
                 className="text-blue-500 hover:underline"
               >
                 {name}

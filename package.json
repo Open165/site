@@ -11,18 +11,14 @@
     "preview": "npm run pages:build && wrangler pages dev",
     "deploy": "npm run pages:build && wrangler pages deploy",
     "gen:env": "wrangler types --env-interface CloudflareEnv env.d.ts",
-    "gen:migration": "prisma migrate diff --from-local-d1 --to-schema-datamodel ./db/schema.prisma --script",
+    "gen:migration": "wrangler d1 migrations create open165",
+    "gen:schema": "wrangler d1 export open165 --no-data --local --output db/schema.sql",
     "predb:seed": "tsx ./scripts/syncSiteRecord.ts",
-    "db:seed": "npx wrangler d1 execute open165 --file tmp/scamSiteRecord.sql",
+    "db:seed": "wrangler d1 execute open165 --file tmp/scamSiteRecord.sql",
     "db:migrate": "wrangler d1 migrations apply open165"
-  },
-  "prisma": {
-    "schema": "db/schema.prisma"
   },
   "dependencies": {
     "@next/third-parties": "^14.2.5",
-    "@prisma/adapter-d1": "^5.17.0",
-    "@prisma/client": "^5.17.0",
     "cookie": "^0.6.0",
     "next": "14.1.0",
     "pcre-to-regexp": "^1.1.0",
@@ -41,7 +37,6 @@
     "eslint-config-next": "14.1.0",
     "eslint-plugin-next-on-pages": "^1.12.1",
     "postcss": "^8",
-    "prisma": "^5.17.0",
     "tailwindcss": "^3.3.0",
     "tsx": "^4.16.2",
     "typescript": "^5",
