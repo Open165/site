@@ -47,14 +47,14 @@ npm run db:seed -- --remote
 
 ## Making changes to the database schema
 
-The project uses Cloudflare D1 database and Prisma ORM. To make changes to the database schema, follow these steps:
+The project uses Cloudflare D1 database. To make changes to the database schema, follow these steps:
 
-1. Make changes to `db/schema.prisma`
-2. Generate new migration SQL file via
+1. Generate new migration SQL file via
     ```bash
-    # Please replace <numbers> with the next number in the sequence and <description> with a brief description of the migration
-    npm run gen:migration -- --output db/migrations/<numbers>_<description>.sql
+    npm run gen:migration -- <migration_name>
     ```
+    This will generate a new migration file in `db/migrations` folder, with auto-generated sequence number and `.sql` extension.
+2. Modify the migration file as needed.
 3. Run the following command to apply migrations:
     ```bash
     # Apply to local DB
@@ -62,27 +62,6 @@ The project uses Cloudflare D1 database and Prisma ORM. To make changes to the d
     # Apply to remote DB (need to login wrangler first)
     npm run db:migrate -- --remote
     ```
-4. Update Typescript type for Prisma client using
-    ```bash
-    npx prisma generate
-    ```
-
-Please refrain from `prisma` migration and seed commands directly,
-as it will not connect to the correct Cloudflare D1 database (local or remote).
-
-<details>
-<summary>Details under the script</summary>
-
-Reference documentation
-
-- https://www.prisma.io/docs/orm/overview/databases/cloudflare-d1#differences-to-consider
-- https://www.prisma.io/docs/orm/prisma-client/deployment/edge/deploy-to-cloudflare#deploying-a-nextjs-app-to-cloudflare-pages-with-cloudflarenext-on-pages
-
-Details
-
-- Migration scripts (`db/migrations/*.sql`) are created by prisma, as it compares your local sqlite DB and `schema.prisma` and outputs SQL file.
-- Migration operation itself is managed by wrangler commands, as it keeps tracks of what migration files have been run.
-</details>
 
 ## Incorporating other's changes to the database schema
 
@@ -91,9 +70,6 @@ If you are pulling changes from the repository and the database schema has chang
 ```bash
 # Update local DB by applying new migrations
 npm run db:migrate -- --local
-
-# Update Prisma client
-npx prisma generate
 ```
 
 ## Cloudflare Bindings

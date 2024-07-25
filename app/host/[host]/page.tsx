@@ -1,11 +1,27 @@
-import { getPrisma } from '@/lib/db'
+import { getRequestContext } from '@cloudflare/next-on-pages';
 
 export const runtime = 'edge';
+type Record = {
+  id: number;
+  name: string;
+  url: string;
+  count: number;
+  startDate: string;
+  endDate: string;
+  host: string;
+}
 
 async function getRecords(host: string) {
   'use server';
-  const prisma = getPrisma();
-  return prisma.scamSiteRecord.findMany({where: {host}, orderBy: {endDate: 'desc'}});
+  const db = getRequestContext().env.DB;
+  const { results } = await db.prepare(`
+    SELECT *
+    FROM ScamSiteRecord
+    WHERE lower(host) = lower(?)
+    ORDER BY endDate DESC
+  `).bind(host).all<Record>();
+
+  return results;
 }
 
 export default async function Host({params: {host}}: {params: {host: string}}) {
