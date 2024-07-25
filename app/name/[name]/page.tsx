@@ -1,3 +1,4 @@
+import { trigram } from 'n-gram';
 import { getRequestContext } from '@cloudflare/next-on-pages';
 
 export const runtime = 'edge';
@@ -14,19 +15,40 @@ type Record = {
 async function getRecords(name: string) {
   'use server';
   const db = getRequestContext().env.DB;
-  const { results } = await db.prepare(`
+  const directHitPromise = db.prepare(`
     SELECT *
     FROM ScamSiteRecord
     WHERE lower(name) = lower(?)
     ORDER BY endDate DESC
   `).bind(name).all<Record>();
 
-  return results;
+  const shouldUseFts = name.length > 3;
+  const grams = trigram(name);
+  const whereClause = shouldUseFts ?
+    `ScamSiteRecordFTS MATCH '${grams.map(g => `"${g.replace('"', '""')}"`).join(' OR ')}'` :
+    `name LIKE ?`;
+  const values = shouldUseFts ? [] : [`%${name}%`];
+  const sql = `
+    SELECT
+      rowid,
+      *,
+      highlight(ScamSiteRecordFTS,0,'{{','}}') AS name,
+      highlight(ScamSiteRecordFTS,1,'{{','}}') AS url
+    FROM ScamSiteRecordFTS
+    WHERE  ${whereClause}
+    ORDER BY rank
+  `;
+
+  console.log(sql, values);
+
+  const ftsHitPromise = db.prepare(sql).bind(...values).all<Pick<Record, 'name' | 'url'> & {rowid: string}>();
+
+  return Promise.all([directHitPromise, ftsHitPromise]);
 }
 
 export default async function Name({params: {name: encodedName}}: {params: {name: string}}) {
   const name = decodeURIComponent(encodedName);
-  const records = await getRecords(name);
+  const [{results: directHits}, {results: ftsHits}] = await getRecords(name);
 
   return (
     <main>
@@ -44,13 +66,31 @@ export default async function Name({params: {name: encodedName}}: {params: {name
           </tr>
         </thead>
         <tbody>
-          {records.map((record) => (
+          {directHits.map((record) => (
             <tr key={record.id}>
               <td>{record.name}</td>
               <td>{record.url}</td>
               <td>{record.count}</td>
               <td>{record.startDate}</td>
               <td>{record.endDate}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      Similar entries
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>URL</th>
+          </tr>
+        </thead>
+        <tbody>
+          {ftsHits.map((record) => (
+            <tr key={record.rowid}>
+              <td>{record.name}</td>
+              <td>{record.url}</td>
             </tr>
           ))}
         </tbody>
