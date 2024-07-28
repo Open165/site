@@ -64,7 +64,7 @@ The project uses Cloudflare D1 database. To make changes to the database schema,
     ```
 4. Update `db/schema.sql` for other devs to see the latest schema.
    ```bash
-   nom run gen:schema
+   npm run gen:schema
    ```
 
 ## Incorporating other's changes to the database schema
