@@ -22,9 +22,15 @@ type FTSRecord = {
 const SEP = ['{{', '}}'];
 const SEP_RE = new RegExp(String.raw`${SEP[0]}(.*?)${SEP[1]}`);
 
-export async function searchSimilar(query: string, limit=20): Promise<FTSRecord[]> {
+/**
+ * @param queryInput - Search query to look for in both `name` and `url` fields
+ * @param limit - Max number of results to return
+ * @returns Documents as FTSRecord[] that partially match the query
+ */
+export async function searchSimilar(queryInput: string, limit=20): Promise<FTSRecord[]> {
+  const query = queryInput.trim();
   const db = getRequestContext().env.DB;
-  const shouldUseFts = query.length > 2; // ScamSiteRecordFTS is a trigram index
+  const shouldUseFts = query.length > 2; // ScamSiteRecordFTS is a trigram index, only support queries with 3 or more characters
   const whereClause = shouldUseFts ?
     `ScamSiteRecordFTS MATCH '${trigram(query).map(g => `"${g.replaceAll('"', '""')}"`).join(' OR ')}'` :
     `(name LIKE ? OR url LIKE ?)`;
@@ -63,7 +69,7 @@ export async function searchSimilar(query: string, limit=20): Promise<FTSRecord[
   const { results } = await db.prepare(sql).bind(...values, query, query).all<Omit<FTSRecord, 'nameTokens' | 'urlTokens'> & {name: string; url: string}>();
 
   if(!shouldUseFts) {
-    // Modify result name and url to have tokens
+    // Modify result name and url to wrap matched tokens with SEP
     results.forEach(record => {
       record.name = record.name.replaceAll(query, `${SEP[0]}$&${SEP[1]}`);
       record.url = record.url.replaceAll(query, `${SEP[0]}$&${SEP[1]}`);
