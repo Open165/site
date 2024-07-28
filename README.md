@@ -62,6 +62,10 @@ The project uses Cloudflare D1 database. To make changes to the database schema,
     # Apply to remote DB (need to login wrangler first)
     npm run db:migrate -- --remote
     ```
+4. Update `db/schema.sql` for other devs to see the latest schema.
+   ```bash
+   npm run gen:schema
+   ```
 
 ## Incorporating other's changes to the database schema
 
