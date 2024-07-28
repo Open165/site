@@ -12,7 +12,7 @@
     "deploy": "npm run pages:build && wrangler pages deploy",
     "gen:env": "wrangler types --env-interface CloudflareEnv env.d.ts",
     "gen:migration": "wrangler d1 migrations create open165",
-    "gen:schema": "wrangler d1 export open165 --no-data --local --output db/schema.sql",
+    "gen:schema": "wrangler d1 execute open165 --json --command 'SELECT sql FROM sqlite_master' | tsx ./scripts/genSchema.ts",
     "predb:seed": "tsx ./scripts/syncSiteRecord.ts",
     "db:seed": "wrangler d1 execute open165 --file tmp/scamSiteRecord.sql",
     "db:migrate": "wrangler d1 migrations apply open165"
