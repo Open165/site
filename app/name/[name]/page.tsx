@@ -34,7 +34,7 @@ export default async function Name({params: {name: encodedName}}: {params: {name
 
   return (
     <main>
-      <h1>{name}</h1>
+      <h1 className="font-serif font-light text-6xl">{name}</h1>
       {
         directHits.length === 0 ? `The name ${name} is not reported by 165 yet.` :
         <>
