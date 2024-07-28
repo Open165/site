@@ -1,6 +1,8 @@
+import Link from 'next/link';
+
 import { getRequestContext } from '@cloudflare/next-on-pages';
 import { searchSimilar } from '@/lib/fts';
-import Link from 'next/link';
+import Highlighted from '@/components/Highlighted';
 
 export const runtime = 'edge';
 type Record = {
@@ -73,10 +75,18 @@ export default async function Host({params: {host}}: {params: {host: string}}) {
           </tr>
         </thead>
         <tbody>
-          {ftsHits.map((record) => (
+        {ftsHits.map((record) => (
             <tr key={record.rowid}>
-              <td><Link href={`/name/${record.name}`}>{record.name}</Link></td>
-              <td><Link href={`/host/${record.host}`}>{record.url}</Link></td>
+              <td>
+                <Link href={`/name/${record.nameTokens.join('')}`}>
+                  <Highlighted tokens={record.nameTokens} />
+                </Link>
+              </td>
+              <td>
+                <Link href={`/host/${record.host}`}>
+                  <Highlighted tokens={record.urlTokens} />
+                </Link>
+              </td>
               <td>{record.rank}</td>
             </tr>
           ))}
