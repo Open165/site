@@ -20,6 +20,7 @@
   "dependencies": {
     "@next/third-parties": "^14.2.5",
     "cookie": "^0.6.0",
+    "n-gram": "^2.0.2",
     "next": "14.1.0",
     "pcre-to-regexp": "^1.1.0",
     "react": "^18",
