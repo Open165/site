@@ -9,6 +9,14 @@ type FTSRecord = {
   /** Strings with odd index are matched tokens */
   urlTokens: string[];
   rank: number;
+
+  /** Total number of reports */
+  count: number;
+
+  /** Start date of the first report */
+  startDate: string;
+  /** End date of the last report */
+  endDate: string;
 }
 
 const SEP = ['{{', '}}'];
@@ -29,7 +37,10 @@ export async function searchSimilar(query: string, limit=20): Promise<FTSRecord[
       ranked.name AS name,
       ranked.url AS url,
       ScamSiteRecord.host as host,
-      max(rank) AS rank
+      max(rank) AS rank,
+      sum(count) AS count,
+      min(startDate) AS startDate,
+      max(endDate) AS endDate
     FROM (
       SELECT
         rowid,

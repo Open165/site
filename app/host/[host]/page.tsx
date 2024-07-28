@@ -71,7 +71,7 @@ export default async function Host({params: {host}}: {params: {host: string}}) {
           <tr>
             <th>Name</th>
             <th>URL</th>
-            <th>Rank</th>
+            <th>Reported</th>
           </tr>
         </thead>
         <tbody>
@@ -87,7 +87,7 @@ export default async function Host({params: {host}}: {params: {host: string}}) {
                   <Highlighted tokens={record.urlTokens} />
                 </Link>
               </td>
-              <td>{record.rank}</td>
+              <td>{record.count} time(s) during {record.startDate} and {record.endDate}</td>
             </tr>
           ))}
         </tbody>
