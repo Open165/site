@@ -1,4 +1,5 @@
 # Investment Fraud Prevention Strategy Summary
+https://www.figma.com/board/KRrkyiibaMUug6K1c0Zt4j/Coscup_0804_165?node-id=20-601&t=tHOoj6XKgAkhdzmk-0
 
 ## Persona Overview: Joyce
 
@@ -18,6 +19,8 @@ Joyce is a young woman seeking emotional connection and high financial returns t
      - Provides immediate, non-judgmental warnings about potentially fraudulent sites.
      - Intercepts Joyce at the moment of risk, before emotional investment occurs.
    - **Effectiveness**: High - addresses Joyce's need for discreet, immediate information.
+https://www.figma.com/board/KRrkyiibaMUug6K1c0Zt4j/Coscup_0804_165?node-id=20-601&t=tHOoj6XKgAkhdzmk-4
+- <img width="567" alt="image" src="https://github.com/user-attachments/assets/f9632314-43d5-4e61-b730-de51b07fef0f">
 
 2. **SEO Optimization for Fraud-Related Searches**
    - **Solution**: Optimize Open165's SEO to appear first for searches like "Is this a scam?"
