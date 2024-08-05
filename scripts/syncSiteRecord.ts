@@ -37,13 +37,17 @@ async function main() {
   ).map((line) => {
     const [name, url, count, startDate, endDate] = line.trim().split(',');
     return { name: name.trim(), url: url.trim(), count: +count, startDate: startDate.trim(), endDate: endDate.trim(),
-      // url can only be in:
-      // - some-domain.com
-      // - some-domain.com:port
-      // - some-domain.com/some-path
-      // - some-domain.com/?some-query
-      // - some-domain.com?some-query
-      // - https://some-domain.com
+
+      /**
+       * Extract host from url. URL in open data may come in these formats:
+       *
+       * - some-domain.com
+       * - some-domain.com:port
+       * - some-domain.com/some-path
+       * - some-domain.com/?some-query
+       * - some-domain.com?some-query
+       * - https://some-domain.com
+       * */
       host: url.match(/^(?:https?:\/\/)?([^?\/:]+)/)?.[1] ?? url
     };
   });
