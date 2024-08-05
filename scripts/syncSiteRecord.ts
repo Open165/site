@@ -43,7 +43,8 @@ async function main() {
       // - some-domain.com/some-path
       // - some-domain.com/?some-query
       // - some-domain.com?some-query
-      host: url.match(/^([^?\/:]+)/)?.[0] ?? url
+      // - https://some-domain.com
+      host: url.match(/^(?:https?:\/\/)?([^?\/:]+)/)?.[1] ?? url
     };
   });
 
