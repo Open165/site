@@ -39,10 +39,11 @@ async function main() {
     return { name: name.trim(), url: url.trim(), count: +count, startDate: startDate.trim(), endDate: endDate.trim(),
       // url can only be in:
       // - some-domain.com
+      // - some-domain.com:port
       // - some-domain.com/some-path
       // - some-domain.com/?some-query
       // - some-domain.com?some-query
-      host: url.match(/^([^?\/]+)/)?.[0] ?? url
+      host: url.match(/^([^?\/:]+)/)?.[0] ?? url
     };
   });
 
