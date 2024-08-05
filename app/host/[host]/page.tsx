@@ -1,40 +1,15 @@
 import Link from 'next/link';
-
-import { getRequestContext } from '@cloudflare/next-on-pages';
-import { searchSimilar } from '@/lib/fts';
+import { getRecords } from '@/app/host/util';
 import Highlighted from '@/components/Highlighted';
 
 export const runtime = 'edge';
-type Record = {
-  id: number;
-  name: string;
-  url: string;
-  count: number;
-  startDate: string;
-  endDate: string;
-  host: string;
-}
-
-async function getRecords(host: string) {
-  'use server';
-  const db = getRequestContext().env.DB;
-  const directHitPromise = db.prepare(`
-    SELECT *
-    FROM ScamSiteRecord
-    WHERE lower(host) = lower(?)
-    ORDER BY endDate DESC
-  `).bind(host).all<Record>().then(({results}) => results);
-
-  return Promise.all([directHitPromise, searchSimilar(host)]);
-}
 
 export default async function Host({params: {host}}: {params: {host: string}}) {
   const [directHits, ftsHits] = await getRecords(host);
   const totalReportCount = directHits.reduce((sum, record) => sum + record.count, 0)
 
   return (
-    <main>
-      <h1>{host}</h1>
+    <>
       {
         totalReportCount === 0 ?
         `${host} is not reported by 165 yet.` :
@@ -92,7 +67,6 @@ export default async function Host({params: {host}}: {params: {host: string}}) {
           ))}
         </tbody>
       </table>
-    </main>
+    </>
   )
-
 }
