@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Tooltip } from '@nextui-org/tooltip';
 import { Button } from '@nextui-org/button';
+import Icon from '@/components/Icon';
 import logo from './logo64.svg';
 
 function AppLayout({ children }: { children: React.ReactNode }) {
@@ -25,7 +26,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
             as={Link}
             href="/about"
           >
-            <span className="material-symbols-outlined">info</span>
+            <Icon name="info" />
           </Button>
         </Tooltip>
       </nav>

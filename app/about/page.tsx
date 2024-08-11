@@ -1,4 +1,5 @@
 import { Heading, Paragraph } from '@/components/contents';
+import Icon from '@/components/Icon';
 import { Link } from '@nextui-org/link';
 
 function AboutPage() {
@@ -16,11 +17,7 @@ function AboutPage() {
           href="https://g0v.hackmd.io/@mrorz/open165-proposal"
           isExternal
           showAnchorIcon
-          anchorIcon={
-            <span className="material-symbols-outlined text-medium px-1">
-              open_in_new
-            </span>
-          }
+          anchorIcon={<Icon className="px-1" name="open_in_new" opsz={20} />}
         >
           https://g0v.hackmd.io/@mrorz/open165-proposal
         </Link>
