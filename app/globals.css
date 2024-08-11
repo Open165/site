@@ -1,6 +1,8 @@
 /**
  * Material Symbols with .material-symbols-outlined definition, placed earlier than Tailwind utilities
- * so that Tailwind utilities can override Material Symbols
+ * so that Tailwind utilities can override Material Symbols.
+ * Icon size and weight is defined here in URL.
+ * @ref https://developers.google.com/fonts/docs/material_symbols
  */
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300,0,0');
 
