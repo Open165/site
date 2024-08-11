@@ -1,3 +1,7 @@
+/**
+ * Collection of components for the contents
+ */
+
 import type React from 'react';
 import { twMerge } from 'tailwind-merge';
 
