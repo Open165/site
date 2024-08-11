@@ -30,7 +30,7 @@ function AppLayout({ children }: { children: React.ReactNode }) {
           </Button>
         </Tooltip>
       </nav>
-      <main className="w-full max-w-screen-md p-4 pt-16 relative z-0">
+      <main className="w-full max-w-screen-md p-4 pt-16 flex-1 relative z-0">
         {children}
       </main>
       <footer className="w-full max-w-screen-md p-4 border-t-1">
