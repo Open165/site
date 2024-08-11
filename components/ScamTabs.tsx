@@ -30,27 +30,24 @@ export default function ScamTabs({ name, basePath }: Props) {
   const pathname = usePathname();
 
   return (
-    <div>
-      <Tabs aria-label="Options" selectedKey={pathname}>
-        <Tab
-          title={
-            <TabTitle
-              shortLabel={`它是詐騙嗎`}
-              longLabel={`${name} 是詐騙嗎`}
-            />
-          }
-          href={basePath}
-        />
-        <Tab
-          title={
-            <TabTitle
-              shortLabel={`被騙了怎辦`}
-              longLabel={`被 ${name} 騙了怎麼辦`}
-            />
-          }
-          href={`${basePath}/mitigation`}
-        />
-      </Tabs>
-    </div>
+    <Tabs selectedKey={pathname} size="lg" fullWidth>
+      <Tab
+        key={basePath}
+        title={
+          <TabTitle shortLabel={`它是詐騙嗎`} longLabel={`${name} 是詐騙嗎`} />
+        }
+        href={basePath}
+      />
+      <Tab
+        key={`${basePath}/mitigation`}
+        title={
+          <TabTitle
+            shortLabel={`被騙了怎辦`}
+            longLabel={`被 ${name} 騙了怎麼辦`}
+          />
+        }
+        href={`${basePath}/mitigation`}
+      />
+    </Tabs>
   );
 }
