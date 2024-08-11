@@ -75,12 +75,12 @@ async function main() {
   await writeFile(
     SQL_FILE,
     `
-    DELETE FROM ${TABLE};
-    ${values.map((value) => `INSERT INTO ${TABLE} (name, url, count, startDate, endDate, host) VALUES ${value};`).join('\n')}
+      DELETE FROM ${TABLE};
+      ${values.map((value) => `INSERT INTO ${TABLE} (name, url, count, startDate, endDate, host) VALUES ${value};`).join('\n')}
 
-    -- Rebuild FTS
-    INSERT INTO ${FTS_TABLE}(${FTS_TABLE}) VALUES('rebuild');
-  `.trim()
+      -- Rebuild FTS
+      INSERT INTO ${FTS_TABLE}(${FTS_TABLE}) VALUES('rebuild');
+    `.trim()
   );
 }
 

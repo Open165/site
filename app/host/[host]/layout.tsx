@@ -1,13 +1,17 @@
-import { getRecords } from '@/app/host/util';
+import type React from 'react';
+// import { getRecords } from '@/app/host/util';
 
 import ScamTabs from '@/components/ScamTabs';
 
-type Props = {params: {host: string}};
+type Props = { params: { host: string } };
 
 export const runtime = 'edge';
 
-export default async function Host({params: {host}, children}: React.PropsWithChildren<Props>) {
-  const [directHits, ftsHits] = await getRecords(host);
+export default async function Host({
+  params: { host },
+  children,
+}: React.PropsWithChildren<Props>) {
+  // const [directHits, ftsHits] = await getRecords(host);
 
   return (
     <main>
@@ -15,5 +19,5 @@ export default async function Host({params: {host}, children}: React.PropsWithCh
       <ScamTabs name={host} basePath={`/host/${host}`} />
       {children}
     </main>
-  )
+  );
 }
