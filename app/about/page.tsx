@@ -26,8 +26,15 @@ function AboutPage() {
         </Link>
       </Paragraph>
       <Paragraph>
-        Open165
-        使用之內政部警政署公告資料「165反詐騙諮詢專線_假投資(博弈)網站」取自政府資料開放平臺，該資料由警政署提供，採政府資料開放授權條款-第1版釋出。
+        Open165 使用之內政部警政署公告資料「
+        <Link href="https://data.gov.tw/dataset/78432" isExternal>
+          165反詐騙諮詢專線_假投資(博弈)網站
+        </Link>
+        」取自政府資料開放平臺，該資料由警政署提供，採
+        <Link href="https://data.gov.tw/license" isExternal>
+          政府資料開放授權條款-第1版
+        </Link>
+        釋出。
       </Paragraph>
     </>
   );
