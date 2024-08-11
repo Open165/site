@@ -13,13 +13,6 @@ const config: Config = {
         sans: ['Noto Sans TC', 'sans-serif'],
         serif: ['Noto Serif TC', 'serif'],
       },
-      fontSize: {
-        // From local styles in Figma
-        body: ['16px', '24px'],
-        body2: ['14px', '20px'],
-        heading: ['18px', '28px'],
-        display: ['57px', '64px'],
-      },
     },
   },
   darkMode: 'class',
