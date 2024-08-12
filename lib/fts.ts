@@ -16,7 +16,7 @@ export type FTSRecord = {
   startDate: string;
   /** End date of the last report */
   endDate: string;
-}
+};
 
 const SEP = ['{{', '}}'];
 const SEP_RE = new RegExp(String.raw`${SEP[0]}(.*?)${SEP[1]}`);
@@ -26,13 +26,18 @@ const SEP_RE = new RegExp(String.raw`${SEP[0]}(.*?)${SEP[1]}`);
  * @param limit - Max number of results to return
  * @returns Documents as FTSRecord[] that partially match the query
  */
-export async function searchSimilar(queryInput: string, limit=20): Promise<FTSRecord[]> {
+export async function searchSimilar(
+  queryInput: string,
+  limit = 20
+): Promise<FTSRecord[]> {
   const query = queryInput.trim();
   const db = getRequestContext().env.DB;
   const shouldUseFts = query.length > 2; // ScamSiteRecordFTS is a trigram index, only support queries with 3 or more characters
-  const whereClause = shouldUseFts ?
-    `ScamSiteRecordFTS MATCH '${trigram(query).map(g => `"${g.replaceAll('"', '""')}"`).join(' OR ')}'` :
-    `(name LIKE ? OR host LIKE ?)`;
+  const whereClause = shouldUseFts
+    ? `ScamSiteRecordFTS MATCH '${trigram(query)
+        .map((g) => `"${g.replaceAll('"', '""')}"`)
+        .join(' OR ')}'`
+    : `(name LIKE ? OR host LIKE ?)`;
   const values = shouldUseFts ? [] : [`%${query}%`, `%${query}%`];
 
   /** Select similar with full-text search, but reject 100% match */
@@ -56,7 +61,7 @@ export async function searchSimilar(queryInput: string, limit=20): Promise<FTSRe
         AND lower(name) != lower(?)
         AND lower(host) != lower(?)
       ORDER BY rank
-      LIMIT ${limit*2 /* Not sure query it would fail without LIMIT. Enlarge limit for grouping in the next phase */}
+      LIMIT ${limit * 2 /* Not sure query it would fail without LIMIT. Enlarge limit for grouping in the next phase */}
     ) AS ranked
     LEFT JOIN ScamSiteRecord ON rowid = ScamSiteRecord.id
     GROUP BY ranked.name, ranked.host
@@ -64,20 +69,27 @@ export async function searchSimilar(queryInput: string, limit=20): Promise<FTSRe
     LIMIT ${limit}
   `;
 
-  const { results } = await db.prepare(sql).bind(...values, query, query).all<Omit<FTSRecord, 'nameTokens' | 'hostTokens'> & {name: string; host: string}>();
+  const { results } = await db
+    .prepare(sql)
+    .bind(...values, query, query)
+    .all<
+      Omit<FTSRecord, 'nameTokens' | 'hostTokens'> & {
+        name: string;
+        host: string;
+      }
+    >();
 
-  if(!shouldUseFts) {
+  if (!shouldUseFts) {
     // Modify result name and url to wrap matched tokens with SEP
-    results.forEach(record => {
+    results.forEach((record) => {
       record.name = record.name.replaceAll(query, `${SEP[0]}$&${SEP[1]}`);
       record.host = record.host.replaceAll(query, `${SEP[0]}$&${SEP[1]}`);
     });
   }
 
-  return results.map(({name, host, ...record}) => ({
+  return results.map(({ name, host, ...record }) => ({
     ...record,
     nameTokens: name.split(SEP_RE),
     hostTokens: host.split(SEP_RE),
   }));
 }
-

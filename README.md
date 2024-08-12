@@ -1,4 +1,9 @@
-# Open165
+# Open165 Anti-Fraud Information Site
+
+[![CI test](https://github.com/cofacts/open165/actions/workflows/ci.yaml/badge.svg)](https://github.com/cofacts/open165/actions/workflows/ci.yaml)
+
+Open165 Public Information Anti-Fraud Site is built independently by the public to provide resource for individuals who have been targeted by fraud activities.
+For more details, please refer to the project proposal: https://g0v.hackmd.io/@mrorz/open165-proposal
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`c3`](https://developers.cloudflare.com/pages/get-started/c3).
 

@@ -11,17 +11,23 @@ type Record = {
   startDate: string;
   endDate: string;
   host: string;
-}
+};
 
 export const getRecords = cache(async (host: string) => {
   'use server';
   const db = getRequestContext().env.DB;
-  const directHitPromise = db.prepare(`
-    SELECT *
-    FROM ScamSiteRecord
-    WHERE lower(host) = lower(?)
-    ORDER BY endDate DESC
-  `).bind(host).all<Record>().then(({results}) => results);
+  const directHitPromise = db
+    .prepare(
+      `
+        SELECT *
+        FROM ScamSiteRecord
+        WHERE lower(host) = lower(?)
+        ORDER BY endDate DESC
+      `
+    )
+    .bind(host)
+    .all<Record>()
+    .then(({ results }) => results);
 
   return Promise.all([directHitPromise, searchSimilar(host)]);
 });
