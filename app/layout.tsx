@@ -2,6 +2,8 @@ import type React from 'react';
 import type { Metadata } from 'next';
 
 import { GoogleTagManager } from '@next/third-parties/google';
+
+import Providers from './providers';
 import './globals.css';
 
 const GTM_ID = 'GTM-T4RD9WLJ';
@@ -40,7 +42,9 @@ export default function RootLayout({
         />
       </head>
       <GoogleTagManager gtmId={GTM_ID} />
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
