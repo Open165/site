@@ -43,7 +43,7 @@ export default function RootLayout({
         />
       </head>
       <GoogleTagManager gtmId={GTM_ID} />
-      <body>
+      <body className="font-sans text-body">
         <Providers>
           <AppLayout>{children}</AppLayout>
         </Providers>

@@ -30,10 +30,7 @@ export function Paragraph({
 }: React.ComponentPropsWithoutRef<'p'>) {
   return (
     <p
-      className={twMerge(
-        'text-body font-sans my-6 font-light tracking-wide',
-        className
-      )}
+      className={twMerge('my-6 font-light tracking-wide', className)}
       {...props}
     >
       {children}
