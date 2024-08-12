@@ -1,5 +1,6 @@
 import { getRequestContext } from '@cloudflare/next-on-pages';
 import Link from 'next/link';
+import { Heading } from '@/components/contents';
 
 export const runtime = 'edge';
 
@@ -82,17 +83,13 @@ export default async function Home() {
   const hosts = await loadData();
 
   return (
-    <main className="min-h-screen bg-gray-100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <h1 className="text-4xl font-bold mb-8 text-center text-gray-900">
-          Latest Scam Records
-        </h1>
-        <ul className="space-y-6">
-          {hosts.map((record) => (
-            <ScamRecord key={record.host} {...record} />
-          ))}
-        </ul>
-      </div>
-    </main>
+    <>
+      <Heading>Latest Scam Records</Heading>
+      <ul className="space-y-6">
+        {hosts.map((record) => (
+          <ScamRecord key={record.host} {...record} />
+        ))}
+      </ul>
+    </>
   );
 }

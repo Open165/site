@@ -1,3 +1,11 @@
+/**
+ * Material Symbols with .material-symbols-outlined definition, placed earlier than Tailwind utilities
+ * so that Tailwind utilities can override Material Symbols.
+ * Icon size and weight is defined here in URL.
+ * @ref https://developers.google.com/fonts/docs/material_symbols
+ */
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,300,0,0');
+
 /* Tailwind Directives */
 @tailwind base;
 @tailwind components;
@@ -6,4 +14,20 @@
 html {
   /* Suggested by Google Font */
   font-optical-sizing: auto;
+}
+
+/**
+ * https://github.com/nextui-org/nextui/issues/1494
+ */
+body > [data-overlay-container] {
+  @apply flex flex-col min-h-screen items-center;
+}
+
+/** Material Symbols */
+.material-symbols-outlined {
+  font-variation-settings:
+    'FILL' 0,
+    'wght' 300,
+    'GRAD' 0,
+    'opsz' 24
 }

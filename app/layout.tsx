@@ -5,6 +5,7 @@ import { GoogleTagManager } from '@next/third-parties/google';
 
 import Providers from './providers';
 import './globals.css';
+import AppLayout from '@/components/AppLayout';
 
 const GTM_ID = 'GTM-T4RD9WLJ';
 const GOOGLE_SITE_VERIFICATION = 'k3o46ssxu8N_MljoXU3YGHEiwctCTuQDeWFv_j1rgxU';
@@ -37,13 +38,15 @@ export default function RootLayout({
         />
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&family=Noto+Serif+TC:wght@600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@325&family=Noto+Serif+TC:wght@400&display=swap"
           rel="stylesheet"
         />
       </head>
       <GoogleTagManager gtmId={GTM_ID} />
       <body>
-        <Providers>{children}</Providers>
+        <Providers>
+          <AppLayout>{children}</AppLayout>
+        </Providers>
       </body>
     </html>
   );
