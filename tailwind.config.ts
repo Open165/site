@@ -15,9 +15,9 @@ const config: Config = {
       },
       fontSize: {
         // From local styles in Figma
-        body: ['16px', '24px'],
-        body2: ['14px', '20px'],
-        heading: ['18px', '28px'],
+        body: ['18px', '28px'],
+        body2: ['16px', '24px'],
+        heading: ['22px', '28px'],
         display: ['57px', '64px'],
       },
     },
