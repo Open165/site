@@ -25,9 +25,12 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
-          echo "DATA=$(npx wrangler d1 execute open165 --command 'SELECT max(endDate) AS latestDate FROM ScamSiteRecord' --json --remote | jq '.[0].results.[0].latestDate')" >> "$GITHUB_OUTPUT"
+          npx wrangler d1 execute open165 --command 'SELECT max(endDate) AS latestDate FROM ScamSiteRecord' --json --remote > latest-date.json
 
-      - name: Read latestDate
-        env:
-          LATEST_DATE: ${{ steps.latest-date.outputs.DATA }}
-        run: echo $LATEST_DATE
+      - name: Read latest-date.json
+        run: cat latest-date.json
+
+      # - name: Read latestDate
+      #   env:
+      #     LATEST_DATE: ${{ steps.latest-date.outputs.DATA }}
+      #   run: echo $LATEST_DATE
