@@ -21,6 +21,8 @@ jobs:
         run: npm ci
 
       - run: mkdir -p tmp
+      - run: curl https://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=3BB8E3CE-8223-43AF-B1AB-5824FA889883 -o tmp/scamSiteRecord.csv
+      - run: ls -l tmp
 
       - name: Fetch lateset date in DB
         env:
