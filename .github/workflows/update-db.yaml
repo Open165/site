@@ -20,6 +20,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - run: mkdir -p tmp
+
       - name: Fetch lateset date in DB
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
