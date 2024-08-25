@@ -28,9 +28,10 @@ type NPA165SiteData =
     host: string;
   };
 
-async function main() {
-  await mkdir(path.parse(SQL_FILE).dir, { recursive: true });
-
+async function main(
+  /** When provided, only generate SQL file when there are new data after `latestDate` */
+  latestDate?: string
+) {
   const scamSiteCsv = await (await fetch(NPA_165_SITE_URL)).text();
 
   const rawData: NPA165SiteData[] = scamSiteCsv
@@ -62,7 +63,13 @@ async function main() {
          * */
         host: url.match(/^(?:https?:\/\/)?([^?/:]+)/)?.[1] ?? url,
       };
-    });
+    })
+    .filter((data) => !latestDate || data.endDate > latestDate);
+
+  if (!rawData.length) {
+    console.log('No new data found');
+    return;
+  }
 
   // Sort by endDate ascending
   rawData.sort((a, b) => a.endDate.localeCompare(b.endDate));
@@ -72,6 +79,7 @@ async function main() {
       `('${data.name.replaceAll("'", "''")}', '${data.url}', ${data.count}, '${data.startDate}', '${data.endDate}', '${data.host}')`
   );
 
+  await mkdir(path.parse(SQL_FILE).dir, { recursive: true });
   await writeFile(
     SQL_FILE,
     `
@@ -84,4 +92,4 @@ async function main() {
   );
 }
 
-main().catch(console.error);
+main(process.env.LATEST_DATE).catch(console.error);
