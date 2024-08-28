@@ -32,7 +32,7 @@ jobs:
 
       - name: Set latest date
         id: latest-date
-        run: echo "DATA=$(cat tmp/latest-date.json | jq '.[0].results[0].latestDate')" >> "$GITHUB_OUTPUT"
+        run: echo "DATA=$(cat tmp/latest-date.json | jq -r '.[0].results[0].latestDate')" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Generate SQL file
