@@ -69,7 +69,7 @@ async function main(
       };
     })
     .filter((data) => !latestDate || data.endDate > latestDate);
-    
+
   if (!rawData.length) {
     console.log('No new data found');
     return;
@@ -83,11 +83,12 @@ async function main(
       `('${data.name.replaceAll("'", "''")}', '${data.url}', ${data.count}, '${data.startDate}', '${data.endDate}', '${data.host}')`
   );
 
+  const isUpdating = !!latestDate;
   await mkdir(path.parse(SQL_FILE).dir, { recursive: true });
   await writeFile(
     SQL_FILE,
     `
-      DELETE FROM ${TABLE};
+      ${isUpdating ? '' : `DELETE FROM ${TABLE};`}
       ${values.map((value) => `INSERT INTO ${TABLE} (name, url, count, startDate, endDate, host) VALUES ${value};`).join('\n')}
 
       -- Rebuild FTS
