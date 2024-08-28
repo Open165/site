@@ -36,8 +36,6 @@ async function main(
   /** When provided, only generate SQL file when there are new data after `latestDate` */
   latestDate?: string
 ) {
-  console.log('latestDate:', latestDate);
-
   const scamSiteCsv = await (await fetch(NPA_165_SITE_URL)).text();
 
   const rawData: NPA165SiteData[] = scamSiteCsv
