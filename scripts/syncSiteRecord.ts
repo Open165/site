@@ -7,8 +7,12 @@ import path from 'path';
  * 165反詐騙諮詢專線_假投資(博弈)網站
  * https://data.gov.tw/dataset/160055
  */
-const NPA_165_SITE_URL =
-  'https://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=3BB8E3CE-8223-43AF-B1AB-5824FA889883';
+const NPA_165_SITE_URL = process.env.CI
+  ? // Ronny Wang's mirror to bypass IP region block
+    'https://raw.githubusercontent.com/g0v-data/165-data/main/gamble.csv'
+  : // Official data source
+    'https://data.moi.gov.tw/MoiOD/System/DownloadFile.aspx?DATA=3BB8E3CE-8223-43AF-B1AB-5824FA889883';
+
 const TABLE = 'ScamSiteRecord';
 const FTS_TABLE = 'ScamSiteRecordFTS';
 const SQL_FILE = './tmp/scamSiteRecord.sql';
