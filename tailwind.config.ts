@@ -19,6 +19,9 @@ const config: Config = {
         body2: ['16px', '24px'],
         heading: ['22px', '28px'],
         display: ['57px', '64px'],
+
+        // NextUI token
+        medium: '1em',
       },
     },
   },
