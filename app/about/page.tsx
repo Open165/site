@@ -7,8 +7,9 @@ function AboutPage() {
     <>
       <Heading>關於 Open165</Heading>
       <Paragraph>
-        Open165
-        公開情報反詐資訊站是民間自主架設的網站，使用內政部警政署公告的開放資料等公開來源情報（OSI），
+        Open165 反詐筆記是<mark className="highlighter">民間自主架設</mark>
+        的網站，使用內政部警政署公告的開放資料等
+        <mark className="highlighter">公開來源情報（OSI）</mark>，
         讓已經接觸到詐騙或已經被詐騙的民眾，能搜尋到相關資訊，避免被二次詐騙。
       </Paragraph>
       <Paragraph>

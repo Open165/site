@@ -12,11 +12,11 @@ const GOOGLE_SITE_VERIFICATION = 'k3o46ssxu8N_MljoXU3YGHEiwctCTuQDeWFv_j1rgxU';
 
 export const metadata: Metadata = {
   title: {
-    default: 'Open165 民間反詐騙資訊站',
-    template: '%s | Open165 反詐騙',
+    default: 'Open165 反詐筆記',
+    template: '%s | Open165 反詐筆記',
   },
   description:
-    'Open165 反詐資訊站是民間自主架設的網站，使用內政部警政署公告的開放資料等公開來源情報（OSI），讓已經接觸到詐騙或已經被詐騙的民眾，能搜尋到相關資訊，避免被二次詐騙。',
+    'Open165 反詐筆記是民間自主架設的網站，使用內政部警政署公告的開放資料等公開來源情報（OSI），讓已經接觸到詐騙或已經被詐騙的民眾，能搜尋到相關資訊，避免被二次詐騙。',
   verification: {
     google: GOOGLE_SITE_VERIFICATION,
   },
