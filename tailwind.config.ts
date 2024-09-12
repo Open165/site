@@ -17,8 +17,15 @@ const config: Config = {
         // From local styles in Figma
         body: ['18px', '28px'],
         body2: ['16px', '24px'],
-        heading: ['22px', '28px'],
-        display: ['57px', '64px'],
+        heading: ['22px', { lineHeight: '28px', fontWeight: 900 }],
+        display: [
+          '57px',
+          {
+            lineHeight: '64px',
+            letterSpacing: '-0.01em',
+            fontWeight: 300,
+          },
+        ],
 
         // NextUI token
         medium: '1em',
