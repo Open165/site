@@ -22,16 +22,29 @@ type NPA165Announcement = {
 /**
  * Possible title formats and their respective expected output
  * - 165反詐騙諮詢專線公布108/12/30-109/01/05民眾通報高風險賣場(平臺) --> 2020/01/05
- * - 公布108/12/11-12/17民眾通報假投資博奕網站(投資網站) --> 2019/12/17
+ * - 公布108/12/11-12/17民眾通報假投資博奕網站(投資網站) --> 2019/12/17 (year may be omitted)
+ * - 公布1/30~2/5民眾通報假投資(博奕)詐騙網站 --> 2020/02/05 (handle `~` as separator)
  * - 公布2/6-2/12民眾通報假投資(博奕)詐騙網站 --> 2020/02/12 (year comes from publishDate)
+ *
  * @param title
- * @returns
+ * @param publishDate - The date when the announcement is published, in YYYY-MM-DDThh:mm:ss+08:00
+ * @returns The end date of the announcement in YYYY/MM/DD format
  */
-function getEndDate(title: string) {
-  const matches = title.match(/-(\d+)\/(\d+)\/(\d+)/);
+function getEndDate(title: string, publishDate: string): string {
+  const publishYear = +publishDate.slice(0, 4);
+  const publishMonth = +publishDate.slice(5, 7);
+
+  // [-~]: handle both `~` and `-` as separator
+  // (?:\d{1,3}\/)?: year is optional
+  const matches = title.match(/[-~](?:\d{1,3}\/)?(\d{1,2}\/\d{1,2})/);
   if (!matches) throw new Error(`Cannot extract end date from "${title}"`);
-  const [, rocYear, month, date] = matches;
-  return `${+rocYear + 1911}/${month.padStart(2, '0')}/${date.padStart(2, '0')}`;
+  const [month, date] = matches[1].split('/');
+
+  // `publishDate` is after end date, but should be within 1 week.
+  // When `publishMonth` is smaller than `month`, the year should be `publishYear - 1`
+  const year = publishMonth < +month ? publishYear - 1 : publishYear;
+
+  return `${year}/${month.padStart(2, '0')}/${date.padStart(2, '0')}`;
 }
 
 async function main() {
@@ -43,7 +56,7 @@ async function main() {
     .filter(({ title }) => title.match(ANNOUCNEMENT_REGEX))
     .map(
       ({ id, title, publishDate }) =>
-        `(${id}, '${title.replaceAll("'", "''")}', '${getEndDate(title)}', '${publishDate}')`
+        `(${id}, '${title.replaceAll("'", "''")}', '${getEndDate(title, publishDate)}', '${publishDate}')`
     );
 
   await writeFile(
