@@ -38,6 +38,7 @@ export default async function ReportByName({
                 <th>Count</th>
                 <th>Start Date</th>
                 <th>End Date</th>
+                <th>165</th>
               </tr>
             </thead>
             <tbody>
@@ -50,6 +51,13 @@ export default async function ReportByName({
                   <td>{record.count}</td>
                   <td>{record.startDate}</td>
                   <td>{record.endDate}</td>
+                  <td>
+                    <Link
+                      href={`https://165.npa.gov.tw/#/article/9/${record.announcementId}#:~:text=${record.name}`}
+                    >
+                      {record.announcementTitle}
+                    </Link>
+                  </td>
                 </tr>
               ))}
             </tbody>
