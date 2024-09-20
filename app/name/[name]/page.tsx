@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Highlighted from '@/components/Highlighted';
+import DirectHitAccordion from './DirectHitAccordion';
 import { getRecords } from '@/app/name/util';
 import { Paragraph } from '@/components/contents';
 
@@ -30,38 +31,8 @@ export default async function ReportByName({
             以下是內政部警政署 165 的開放資料所公布，使用「{name}
             」名義的詐騙網站，以及收到回報的次數。
           </Paragraph>
-          <table>
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>URL</th>
-                <th>Count</th>
-                <th>Start Date</th>
-                <th>End Date</th>
-                <th>165</th>
-              </tr>
-            </thead>
-            <tbody>
-              {directHits.map((record) => (
-                <tr key={record.id}>
-                  <td>{record.name}</td>
-                  <td>
-                    <Link href={`/host/${record.host}`}>{record.url}</Link>
-                  </td>
-                  <td>{record.count}</td>
-                  <td>{record.startDate}</td>
-                  <td>{record.endDate}</td>
-                  <td>
-                    <Link
-                      href={`https://165.npa.gov.tw/#/article/9/${record.announcementId}#:~:text=${record.name}`}
-                    >
-                      {record.announcementTitle}
-                    </Link>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+
+          <DirectHitAccordion directHits={directHits} />
         </>
       )}
 
