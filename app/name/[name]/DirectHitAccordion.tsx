@@ -2,8 +2,8 @@
 
 import { useMemo } from 'react';
 import Link from 'next/link';
+import { Link as NextUILink } from '@nextui-org/link';
 import { Accordion, AccordionItem } from '@nextui-org/accordion';
-import { Chip } from '@nextui-org/chip';
 
 type Props = {
   /** Scam site report with direct hit */
@@ -50,17 +50,22 @@ export default function DirectHitAccordion({ directHits }: Props) {
           title={host}
           subtitle={`${records[records.length - 1].startDate} ~ ${records[0].endDate} 共通報 ${records.reduce((sum, { count }) => sum + count, 0)} 次`}
         >
-          <Link href={`/host/${host}`}>查詢 {host} 的詐騙紀錄</Link>
-          警政署公告
+          <Link href={`/host/${host}`} passHref legacyBehavior>
+            <NextUILink>查詢 {host} 的詐騙紀錄與類似網域</NextUILink>
+          </Link>
+          <h2 className="mt-2">
+            警政署針對 {records[0].name} - {host} 的公告
+          </h2>
           <ul>
             {records.map((record) => (
               <li key={record.id}>
-                <Link
+                <NextUILink
+                  isExternal
+                  showAnchorIcon
                   href={`https://165.npa.gov.tw/#/article/9/${record.announcementId}#:~:text=${record.name}`}
                 >
-                  {record.announcementTitle}
-                </Link>{' '}
-                （通報 {record.count} 件）
+                  {record.announcementTitle}（通報 {record.count} 件）
+                </NextUILink>{' '}
               </li>
             ))}
           </ul>
