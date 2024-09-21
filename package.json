@@ -13,8 +13,8 @@
     "gen:env": "wrangler types --env-interface CloudflareEnv env.d.ts",
     "gen:migration": "wrangler d1 migrations create open165",
     "gen:schema": "wrangler d1 execute open165 --json --command 'SELECT sql FROM sqlite_master' | tsx ./scripts/genSchema.ts",
-    "predb:seed": "tsx ./scripts/syncSiteRecord.ts",
-    "db:seed": "wrangler d1 execute open165 --file tmp/scamSiteRecord.sql",
+    "predb:seed": "tsx ./scripts/syncSiteRecord.ts && tsx ./scripts/syncSiteAnnouncements.ts",
+    "db:seed": "wrangler d1 execute open165 --file tmp/scamSiteRecord.sql && wrangler d1 execute open165 --file tmp/scamSiteAnnouncement.sql",
     "db:migrate": "wrangler d1 migrations apply open165"
   },
   "dependencies": {
