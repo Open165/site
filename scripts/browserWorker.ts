@@ -7,7 +7,10 @@ export default {
     let img: Buffer;
     if (url) {
       url = new URL(url).toString(); // normalize
+
+      // @ts-ignore - not sure why Cloudflare generated fetcher type is not compatible with puppeteer
       const browser = await puppeteer.launch(env.MYBROWSER);
+
       const page = await browser.newPage();
       await page.goto(url);
       img = (await page.screenshot()) as Buffer;
@@ -20,4 +23,4 @@ export default {
       return new Response('Please add an ?url=https://example.com/ parameter');
     }
   },
-} satisfies ExportedHandler<Env>;
+} satisfies ExportedHandler<CloudflareEnv>;
