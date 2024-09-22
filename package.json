@@ -32,7 +32,7 @@
   "devDependencies": {
     "@cloudflare/next-on-pages": "^1.12.1",
     "@cloudflare/puppeteer": "^0.0.14",
-    "@cloudflare/workers-types": "^4.20240712.0",
+    "@cloudflare/workers-types": "^4.20240919.0",
     "@total-typescript/ts-reset": "^0.6.1",
     "@types/node": "^20",
     "@types/react": "^18",
