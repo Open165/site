@@ -12,10 +12,7 @@ export function Heading({
 }: React.ComponentPropsWithoutRef<'h1'>) {
   return (
     <h1
-      className={twMerge(
-        'text-display font-serif font-normal my-14 -tracking-[.01em]',
-        className
-      )}
+      className={twMerge('text-display font-serif my-14', className)}
       {...props}
     >
       {children}

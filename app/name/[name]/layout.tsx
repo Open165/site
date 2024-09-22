@@ -1,6 +1,7 @@
 import React from 'react';
-// import { getRecords } from '@/app/name/util';
+import { getRecords, getSummary } from '@/app/name/util';
 import ScamTabs from '@/components/ScamTabs';
+import { Heading, Paragraph } from '@/components/contents';
 
 export const runtime = 'edge';
 
@@ -11,11 +12,12 @@ export default async function Name({
   children,
 }: React.PropsWithChildren<Props>) {
   const name = decodeURIComponent(encodedName).trim();
-  // const [directHits, ftsHits] = await getRecords(name);
+  const [directHits] = await getRecords(name);
 
   return (
     <main>
-      <h1 className="font-serif font-light text-6xl">{name}</h1>
+      <Heading>{name}</Heading>
+      <Paragraph>{getSummary(name, directHits)}</Paragraph>
       <ScamTabs name={name} basePath={`/name/${encodedName}`} />
       {children}
     </main>
