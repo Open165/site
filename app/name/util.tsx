@@ -11,6 +11,8 @@ type Record = {
   startDate: string;
   endDate: string;
   host: string;
+  announcementId: number;
+  announcementTitle: string;
 };
 
 /** Get records with site name */
@@ -19,8 +21,12 @@ export const getRecords = cache(async (name: string) => {
   const directHitPromise = db
     .prepare(
       `
-        SELECT *
+        SELECT
+          ScamSiteRecord.*,
+          ScamSiteAnnouncement.id AS announcementId,
+          ScamSiteAnnouncement.title AS announcementTitle
         FROM ScamSiteRecord
+        LEFT JOIN ScamSiteAnnouncement ON ScamSiteRecord.endDate = ScamSiteAnnouncement.endDate
         WHERE lower(name) = lower(?)
         ORDER BY endDate DESC
       `

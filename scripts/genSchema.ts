@@ -4,8 +4,31 @@
 
 import { readFileSync, writeFileSync } from 'fs';
 
-const input = JSON.parse(readFileSync(0, 'utf-8'))[0]
-  .results.map((row: { sql: string }) => row.sql)
+/**
+ * The JSON result of `SELECT sql FROM sqlite_master`.
+ * @example [
+ *   {
+ *     "results": [
+ *       {
+ *         "sql": "CREATE TABLE _cf_KV (\n      key TEXT PRIMARY KEY,\n      value BLOB\n    ) WITHOUT ROWID"
+ *       },
+ *       {
+ *         "sql": "CREATE TABLE d1_migrations(\n\t\tid         INTEGER PRIMARY KEY AUTOINCREMENT,\n\t\tname       TEXT UNIQUE,\n\t\tapplied_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL\n)"
+ *       },
+ *       {
+ *         "sql": "null"
+ *       },
+ *       {
+ *         "sql": "CREATE TABLE sqlite_sequence(name,seq)"
+ *       }, // ......
+ *     ]
+ *   }
+ * ]
+ **/
+type SQLResults = { results: { sql: string }[] }[];
+
+const input = (JSON.parse(readFileSync(0, 'utf-8')) as SQLResults)[0].results
+  .map((row: { sql: string }) => row.sql)
   .filter((sql: string) => sql !== 'null') // sqlite_autoindex_d1_migrations_1 has SQL being string "null"
   .join('\n\n');
 
