@@ -48,6 +48,6 @@
     "tsx": "^4.16.2",
     "typescript": "^5",
     "vercel": "^35.0.3",
-    "wrangler": "^3.65.0"
+    "wrangler": "^3.99.0"
   }
 }
