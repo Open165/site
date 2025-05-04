@@ -130,7 +130,7 @@ jobs:
             response=$(curl -s -X POST "$API_URL" \
               -H "Content-Type: application/json" \
               -H "API-Key: $API_KEY" \
-              -d "{\"url\": \"$url\", \"visibility\": \"public\"}")
+              -d "{\"url\": \"$url\", \"visibility\": \"public\", \"tags\": [\"scam\", \"malicious\"]}")
 
             uuid=$(echo $response | jq -r '.uuid // empty')
 
