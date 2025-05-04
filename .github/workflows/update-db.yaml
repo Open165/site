@@ -6,8 +6,12 @@ on:
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
-  update-db:
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      latest_date: ${{ steps.latest-date.outputs.DATA }}
+      has_site_records: ${{ steps.check-files.outputs.has_site_records }}
+      has_announcements: ${{ steps.check-files.outputs.has_announcements }}
     steps:
       - uses: actions/checkout@v4
 
@@ -27,7 +31,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
-          npx wrangler d1 execute open165 --command 'SELECT max(endDate) AS latestDate FROM ScamSiteRecord' --json --remote > tmp/latest-date.json &&\
+          npx -y wrangler d1 execute open165 --command 'SELECT max(endDate) AS latestDate FROM ScamSiteRecord' --json --remote > tmp/latest-date.json &&\
           cat tmp/latest-date.json
 
       - name: Set latest date
@@ -40,16 +44,55 @@ jobs:
           LATEST_DATE: ${{ steps.latest-date.outputs.DATA }}
         run: npm run predb:seed
 
+      - name: Check if generated files exist
+        id: check-files
+        run: |
+          echo "has_site_records=$([[ -s tmp/scamSiteRecord.sql ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
+          echo "has_announcements=$([[ -s tmp/scamSiteAnnouncement.sql ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-files
+          path: |
+            tmp/scamSiteRecord.sql
+            tmp/scamSiteAnnouncement.sql
+            tmp/scamSiteUrls.txt
+            tmp/latest-date.json
+          retention-days: 7
+          if-no-files-found: warn
+
+  update-scam-site-records:
+    needs: prepare
+    runs-on: ubuntu-latest
+    if: ${{ needs.prepare.outputs.has_site_records == 'true' }}
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-files
+          path: tmp
+
       - name: Update scam site records
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: npx wrangler d1 execute open165 --file tmp/scamSiteRecord.sql --remote
-        if: ${{ hashFiles('tmp/scamSiteRecord.sql') != '' }}
+        run: npx -y wrangler d1 execute open165 --file tmp/scamSiteRecord.sql --remote
+
+  update-scam-site-announcements:
+    needs: prepare
+    runs-on: ubuntu-latest
+    if: ${{ needs.prepare.outputs.has_announcements == 'true' }}
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-files
+          path: tmp
 
       - name: Update scam site announcements
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: npx wrangler d1 execute open165 --file tmp/scamSiteAnnouncement.sql --remote
-        if: ${{ hashFiles('tmp/scamSiteAnnouncement.sql') != '' }}
+        run: npx -y wrangler d1 execute open165 --file tmp/scamSiteAnnouncement.sql --remote
