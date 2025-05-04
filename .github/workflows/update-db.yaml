@@ -40,7 +40,7 @@ jobs:
         run: echo "DATA=$(cat tmp/latest-date.json | jq -r '.[0].results[0].latestDate')" >> "$GITHUB_OUTPUT"
         shell: bash
 
-      - name: Generate SQL file
+      - name: Generate the URL list and SQL files
         env:
           LATEST_DATE: ${{ steps.latest-date.outputs.DATA }}
         run: npm run predb:seed
