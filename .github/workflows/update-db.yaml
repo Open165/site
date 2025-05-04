@@ -12,6 +12,7 @@ jobs:
       latest_date: ${{ steps.latest-date.outputs.DATA }}
       has_site_records: ${{ steps.check-files.outputs.has_site_records }}
       has_announcements: ${{ steps.check-files.outputs.has_announcements }}
+      has_urls: ${{ steps.check-files.outputs.has_urls }}
     steps:
       - uses: actions/checkout@v4
 
@@ -49,6 +50,7 @@ jobs:
         run: |
           echo "has_site_records=$([[ -s tmp/scamSiteRecord.sql ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
           echo "has_announcements=$([[ -s tmp/scamSiteAnnouncement.sql ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
+          echo "has_urls=$([[ -s tmp/scamSiteUrls.txt ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
         shell: bash
 
       - name: Upload artifacts
@@ -96,3 +98,50 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: npx -y wrangler d1 execute open165 --file tmp/scamSiteAnnouncement.sql --remote
+
+  submit-to-urlscan:
+    needs: prepare
+    runs-on: ubuntu-latest
+    if: ${{ needs.prepare.outputs.has_urls == 'true' }}
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-files
+          path: tmp
+
+      - name: Submit URLs to URLscan.io
+        run: |
+          # Set API information
+          API_URL="https://urlscan.io/api/v1/scan/"
+          API_KEY="${{ secrets.URLSCAN_API_KEY }}"
+
+          # Read URLs file and submit to URLscan
+          echo "Starting URL submission to URLscan.io..."
+
+          cat tmp/scamSiteUrls.txt | while read url; do
+            if [ -z "$url" ]; then
+              continue
+            fi
+
+            echo "Submitting URL: $url"
+
+            # Submit URL to URLscan.io
+            response=$(curl -s -X POST "$API_URL" \
+              -H "Content-Type: application/json" \
+              -H "API-Key: $API_KEY" \
+              -d "{\"url\": \"$url\", \"visibility\": \"unlisted\"}")
+
+            uuid=$(echo $response | jq -r '.uuid // empty')
+
+            if [ ! -z "$uuid" ]; then
+              echo "UUID: $uuid"
+            else
+              echo "Submission failed: $response"
+            fi
+
+            # Wait 2 seconds between submissions to avoid API rate limits
+            sleep 2
+          done
+
+          echo "URL submission completed"
