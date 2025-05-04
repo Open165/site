@@ -6,8 +6,13 @@ on:
   workflow_dispatch:  # Allow manual triggering
 
 jobs:
-  update-db:
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      latest_date: ${{ steps.latest-date.outputs.DATA }}
+      has_site_records: ${{ steps.check-files.outputs.has_site_records }}
+      has_announcements: ${{ steps.check-files.outputs.has_announcements }}
+      has_urls: ${{ steps.check-files.outputs.has_urls }}
     steps:
       - uses: actions/checkout@v4
 
@@ -27,7 +32,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
-          npx wrangler d1 execute open165 --command 'SELECT max(endDate) AS latestDate FROM ScamSiteRecord' --json --remote > tmp/latest-date.json &&\
+          npx -y wrangler d1 execute open165 --command 'SELECT max(endDate) AS latestDate FROM ScamSiteRecord' --json --remote > tmp/latest-date.json &&\
           cat tmp/latest-date.json
 
       - name: Set latest date
@@ -35,21 +40,108 @@ jobs:
         run: echo "DATA=$(cat tmp/latest-date.json | jq -r '.[0].results[0].latestDate')" >> "$GITHUB_OUTPUT"
         shell: bash
 
-      - name: Generate SQL file
+      - name: Generate the URL list and SQL files
         env:
           LATEST_DATE: ${{ steps.latest-date.outputs.DATA }}
         run: npm run predb:seed
+
+      - name: Check if generated files exist
+        id: check-files
+        run: |
+          echo "has_site_records=$([[ -s tmp/scamSiteRecord.sql ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
+          echo "has_announcements=$([[ -s tmp/scamSiteAnnouncement.sql ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
+          echo "has_urls=$([[ -s tmp/scamSiteUrls.txt ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
+        shell: bash
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-files
+          path: |
+            tmp/scamSiteRecord.sql
+            tmp/scamSiteAnnouncement.sql
+            tmp/scamSiteUrls.txt
+            tmp/latest-date.json
+          retention-days: 7
+          if-no-files-found: warn
+
+  update-scam-site-records:
+    needs: prepare
+    runs-on: ubuntu-latest
+    if: ${{ needs.prepare.outputs.has_site_records == 'true' }}
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-files
+          path: tmp
 
       - name: Update scam site records
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: npx wrangler d1 execute open165 --file tmp/scamSiteRecord.sql --remote
-        if: ${{ hashFiles('tmp/scamSiteRecord.sql') != '' }}
+        run: npx -y wrangler d1 execute open165 --file tmp/scamSiteRecord.sql --remote
+
+  update-scam-site-announcements:
+    needs: prepare
+    runs-on: ubuntu-latest
+    if: ${{ needs.prepare.outputs.has_announcements == 'true' }}
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-files
+          path: tmp
 
       - name: Update scam site announcements
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        run: npx wrangler d1 execute open165 --file tmp/scamSiteAnnouncement.sql --remote
-        if: ${{ hashFiles('tmp/scamSiteAnnouncement.sql') != '' }}
+        run: npx -y wrangler d1 execute open165 --file tmp/scamSiteAnnouncement.sql --remote
+
+  submit-to-urlscan:
+    needs: prepare
+    runs-on: ubuntu-latest
+    if: ${{ needs.prepare.outputs.has_urls == 'true' }}
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: generated-files
+          path: tmp
+
+      - name: Submit URLs to URLscan.io
+        run: |
+          # Set API information
+          API_URL="https://urlscan.io/api/v1/scan/"
+          API_KEY="${{ secrets.URLSCAN_API_KEY }}"
+
+          # Read URLs file and submit to URLscan
+          echo "Starting URL submission to URLscan.io..."
+
+          cat tmp/scamSiteUrls.txt | while read url; do
+            if [ -z "$url" ]; then
+              continue
+            fi
+
+            echo "Submitting URL: $url"
+
+            # Submit URL to URLscan.io
+            response=$(curl -s -X POST "$API_URL" \
+              -H "Content-Type: application/json" \
+              -H "API-Key: $API_KEY" \
+              -d "{\"url\": \"$url\", \"visibility\": \"public\", \"tags\": [\"scam\", \"malicious\"]}")
+
+            uuid=$(echo $response | jq -r '.uuid // empty')
+
+            if [ ! -z "$uuid" ]; then
+              echo "UUID: $uuid"
+            else
+              echo "Submission failed: $response"
+            fi
+
+            # Wait 2 seconds between submissions to avoid API rate limits
+            sleep 2
+          done
+
+          echo "URL submission completed"

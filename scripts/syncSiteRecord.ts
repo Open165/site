@@ -16,6 +16,7 @@ const NPA_165_SITE_URL = process.env.CI
 const TABLE = 'ScamSiteRecord';
 const FTS_TABLE = 'ScamSiteRecordFTS';
 const SQL_FILE = './tmp/scamSiteRecord.sql';
+const URLS_FILE = './tmp/scamSiteUrls.txt';
 
 type NPA165SiteData =
   /** Fields from data */
@@ -95,6 +96,12 @@ async function main(
       INSERT INTO ${FTS_TABLE}(${FTS_TABLE}) VALUES('rebuild');
     `.trim()
   );
+
+  // Extract URLs and write them to a separate file, one URL per line
+  const urlsOutput = rawData.map((data) => data.url).join('\n');
+  await writeFile(URLS_FILE, urlsOutput);
+
+  console.log(`Written ${rawData.length} URLs to ${URLS_FILE}`);
 }
 
 main(process.env.LATEST_DATE).catch(console.error);
