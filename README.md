@@ -13,8 +13,9 @@ Setup database using:
 ```bash
 npm i
 npm run db:migrate -- --local
-npm run db:seed
 ```
+
+Note: Database seeding has been migrated to the [open165-worker](https://github.com/open165/worker) project.
 
 ## Start server
 
@@ -40,15 +41,9 @@ This locally builds and previews application using the [Wrangler](https://develo
 
 For more details see the [`@cloudflare/next-on-pages` recommended workflow](https://github.com/cloudflare/next-on-pages/blob/main/internal-packages/next-dev/README.md#recommended-development-workflow)
 
-## Updating scam site DB from 165 open data
+## Database seeding
 
-```bash
-# Fetch opendata and update local DB
-npm run db:seed
-
-# Fetch opendata and update to remote DB. Add --yes to skip confirmation
-npm run db:seed -- --remote
-```
+The scam site database update has been migrated to the [open165-worker](https://github.com/open165/worker) project. Please refer to the worker project's README for more information on the scheduled execution and manual execution of the data sync workflows.
 
 ## Making changes to the database schema
 
