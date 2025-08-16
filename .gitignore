@@ -42,3 +42,6 @@ next-env.d.ts
 # wrangler files
 .wrangler
 .dev.vars
+
+# Prevent google-github-actions/auth credentials being committed to git by accident
+gha-creds-*.json
